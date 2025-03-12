@@ -1,6 +1,7 @@
 # Google Chat Build Message Action
 
 This GitHub Action sends build status notifications to Google Chat.
+![alt text](image.png)
 
 ## Inputs
 
@@ -16,7 +17,7 @@ Create a new webhook in Google Chat and add the URL to your repository secrets.
 ```yaml
       (...)
       - name: Notify Google Chat
-        uses: ./.github/actions/gchat-action-msg
+        uses: agro1desenvolvimento//gchat-action-msg@v1
         with:
           webhook-url: ${{ GOOGLECHAT_WEBHOOK_BUILD_URL }}
           name: "Message Title"
