@@ -1,0 +1,87 @@
+name: 'Google Chat build Message'
+description: 'Send a message to Google Chat'
+
+inputs:
+  webhook-url:
+    description: 'Google Chat webhook URL'
+    required: true
+  name:
+    description: 'Name of the build'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Send Message
+      shell: bash
+      run: |
+        STATUS=$(echo "${{ job.status }}")
+        if [ "$STATUS" == "success" ]; then
+          COLOR="#00FF00"
+        else
+          COLOR="#FF0000"
+        fi
+        DATA=$(cat <<EOF
+        {
+          "cardsV2": [
+            {
+              "cardId": "card-build",
+              "card": {
+                "header": {
+                  "title": "${{ inputs.name }}",
+                  "subtitle": "${{ github.repository }}"
+                },
+                "sections": [
+                  {
+                    "collapsible": false,
+                    "widgets": [
+                      {
+                        "decoratedText": {
+                          "topLabel": "Status",
+                          "text": "<font color='#00FF00'>${{ job.status }}</font>"
+                        }
+                      },
+                      {
+                        "decoratedText": {
+                          "topLabel": "Branch",
+                          "text": "${{ github.ref_name }}"
+                        }
+                      },
+                      {
+                        "divider": {} 
+                      },
+                      {
+                        "buttonList": {
+                          "buttons": [
+                            {
+                              "text": "View Run",
+                              "type": "FILLED",
+                              "onClick": {
+                                "openLink": {
+                                  "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                                }
+                              }
+                            },
+                            {
+                              "text": "Open Repository",
+                              "type": "FILLED",
+                              "onClick": {
+                                "openLink": {
+                                  "url": "${{ github.server_url }}/${{ github.repository }}"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+        EOF
+        )
+        echo $DATA
+        curl -X POST "${{ inputs.webhook-url }}" -H 'Content-Type: application/json' -d "$DATA" 
