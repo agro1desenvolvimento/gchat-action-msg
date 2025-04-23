@@ -18,8 +18,9 @@ Create a new webhook in Google Chat and add the URL to your repository secrets.
       (...)
       - name: Notify Google Chat
         uses: agro1desenvolvimento//gchat-action-msg@v1
+        if: always()
         with:
-          webhook-url: ${{ GOOGLECHAT_WEBHOOK_BUILD_URL }}
+          webhook-url: ${{ secrets.GOOGLECHAT_WEBHOOK_BUILD_URL }}
           name: "Message Title"
       (...)
 ```

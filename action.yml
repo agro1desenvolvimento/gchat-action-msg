@@ -38,7 +38,7 @@ runs:
                       {
                         "decoratedText": {
                           "topLabel": "Status",
-                          "text": "<font color='#00FF00'>${{ job.status }}</font>"
+                          "text": "<font color='${COLOR}'>${{ job.status }}</font>"
                         }
                       },
                       {
